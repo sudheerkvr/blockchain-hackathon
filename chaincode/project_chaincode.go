@@ -214,12 +214,14 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	}
 	expensetype := strings.ToLower(args[4])
 	
+	fmt.Println("Time Entry : ", projectname, taskname, personname, quantity, expensetype)
 	var projRates string
 	if projectname == "proj1" {
 		projRates = proj1Rates
 	} else if projectname == "proj2" {
 		projRates = proj2Rates
 	}
+	fmt.Println("projRates : "+projRates);
 
 	//get the project time entries
 	projectRatesAsBytes, err := stub.GetState(projRates)
@@ -229,14 +231,19 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	
 	var projRatesObj map[string]interface{}
 	json.Unmarshal(projectRatesAsBytes, &projRatesObj)
+	fmt.Println("projRatesObj : ", projRatesObj);
 	
 	userRate := projRatesObj[personname].(string)
+	fmt.Println("userRate : "+userRate);
+
 	userRateInt, err := strconv.Atoi(userRate)
 	if err != nil {
 		return nil, errors.New("Rate is not an integer")
 	}
+	fmt.Println("userRateInt : ", userRateInt);
 	
 	totalAmount := userRateInt * quantity
+	fmt.Println("totalAmount : ", totalAmount);
 
 	//check if marble already exists
 	/*marbleAsBytes, err := stub.GetState(name)
@@ -256,6 +263,7 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 
 	var timeEntry TimeEntry
 	json.Unmarshal(timeEntryAsBytes, &timeEntry);
+	fmt.Println("timeEntry : ", timeEntry);
 
 	//get the project time entries
 	projectTimeEntriesAsBytes, err := stub.GetState(projectname)
@@ -264,10 +272,11 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	}
 	var projectTimeEntriesArray []TimeEntry
 	json.Unmarshal(projectTimeEntriesAsBytes, &projectTimeEntriesArray)								//un stringify it aka JSON.parse()
+	fmt.Println("Project Time Entries (Before append) : ", projectTimeEntriesArray);
 
 	//append
 	projectTimeEntriesArray = append(projectTimeEntriesArray, timeEntry)									//add marble name to index list
-	fmt.Println("! Project Time Entries: ", projectTimeEntriesArray)
+	fmt.Println("! Project Time Entries (After append) : ", projectTimeEntriesArray)
 	jsonAsBytes, _ := json.Marshal(projectTimeEntriesArray)
 	err = stub.PutState(projectname, jsonAsBytes)						//store name of marble
 
