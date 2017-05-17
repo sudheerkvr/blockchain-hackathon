@@ -261,17 +261,21 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	
 	var totalAmountInt int
 	if len(projectTimeEntry.TimeEntries) > 0 {
+		fmt.Println("No. of time entries : ", len(projectTimeEntry.TimeEntries));
 		totalAmountInt, err := strconv.Atoi(projectTimeEntry.TotalAmount)
 		if err != nil {
 			return nil, errors.New("Total Amount in Project Time Entry is not an integer")
 		}
+		fmt.Println("totalAmountInt (Before): ", totalAmountInt);
 		totalAmountInt = totalAmountInt + derivedAmount
+		fmt.Println("totalAmountInt (After): ", totalAmountInt);
 	} else {
 		projectTimeEntry.ProjectName = projectname
 		totalAmountInt = derivedAmount
 	}
 
 	projectTimeEntry.TotalAmount = strconv.Itoa(totalAmountInt)
+	fmt.Println("projectTimeEntry.TotalAmount : ", projectTimeEntry.TotalAmount);
 	timeEntries := projectTimeEntry.TimeEntries
 	timeEntries = append(timeEntries, timeEntry)
 	projectTimeEntry.TimeEntries = timeEntries
