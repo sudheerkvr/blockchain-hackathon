@@ -33,11 +33,13 @@ type TimeEntry struct {
 	PersonName      string `json:"personname"`
 	QuantityInHours string `json:"quantityinhours"`
 	ExpenseType		string `json:"expensetype"`
-	TotalAmount     string `json:"totalamount"`
+	DerivedAmount   string `json:"derivedamount"`
 }
 
-type AllProjectTimeEntry struct {
-	ProjectTimeEntry []TimeEntry `json:"project_timeentry"`
+type ProjectTimeEntry struct {
+	ProjectName     string 		`json:"projectname"`
+	TotalAmount		string		`json:"totalamount"`
+	TimeEntries 	[]TimeEntry	`json:"timeentries"`
 }
 
 type ProjectMilestone struct {
@@ -128,7 +130,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 		return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
 	}
 
-	key = args[0]
+	key = strings.ToLower(args[0])
 	valAsbytes, err := stub.GetState(key)
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
@@ -168,7 +170,7 @@ func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args 
 }
 
 // ============================================================================================================================
-// Init Marble - create a new marble, store into chaincode state
+// Create Time Entry - create a new time entry, store into chaincode state
 // ============================================================================================================================
 func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
@@ -236,24 +238,11 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	}
 	fmt.Println("userRateInt : ", userRateInt);
 	
-	totalAmount := userRateInt * quantity
-	fmt.Println("totalAmount : ", totalAmount);
+	derivedAmount := userRateInt * quantity
+	fmt.Println("derivedAmount : ", derivedAmount);
 
-	//check if marble already exists
-	/*marbleAsBytes, err := stub.GetState(name)
-	if err != nil {
-		return nil, errors.New("Failed to get marble name")
-	}
-	res := TimeEntry{}
-	json.Unmarshal(timeEntryAsBytes, &res)
-	if res.Name == name{
-		fmt.Println("This marble arleady exists: " + name)
-		fmt.Println(res);
-		return nil, errors.New("This time entry already exists")				//all stop a time entry by this name exists
-	}*/
-	
-	//build the marble json string manually
-	timeEntryAsBytes := []byte(`{"projectname": "` + projectname + `", "taskname": "` + taskname + `", "personname": "` + personname + `", "quantityinhours": "` + strconv.Itoa(quantity) + `", "expensetype": "` + expensetype + `", "totalamount": "` + strconv.Itoa(totalAmount) + `"}`)
+	//build the time entry json string manually
+	timeEntryAsBytes := []byte(`{"projectname": "` + projectname + `", "taskname": "` + taskname + `", "personname": "` + personname + `", "quantityinhours": "` + strconv.Itoa(quantity) + `", "expensetype": "` + expensetype + `", "derivedamount": "` + strconv.Itoa(derivedAmount) + `"}`)
 
 	fmt.Println("timeEntryAsBytes : ", timeEntryAsBytes);
 	fmt.Println("timeEntryAsBytes as a string : ", string(timeEntryAsBytes));
@@ -262,19 +251,33 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	fmt.Println("timeEntry : ", timeEntry);
 
 	//get the project time entries
-	projectTimeEntriesAsBytes, err := stub.GetState(projectname)
+	projectTimeEntryAsBytes, err := stub.GetState(projectname)
 	if err != nil {
 		return nil, errors.New("Failed to get time entries for "+ projectname)
 	}
-	var projectTimeEntriesArray []TimeEntry
-	json.Unmarshal(projectTimeEntriesAsBytes, &projectTimeEntriesArray)								//un stringify it aka JSON.parse()
-	fmt.Println("Project Time Entries (Before append) : ", projectTimeEntriesArray);
+	var projectTimeEntry ProjectTimeEntry
+	json.Unmarshal(projectTimeEntryAsBytes, &projectTimeEntry)								//un stringify it aka JSON.parse()
+	fmt.Println("Project Time Entry (Before append) : ", projectTimeEntry);
+	
+	var totalAmountInt int
+	if len(projectTimeEntry.TimeEntries) > 0 {
+		totalAmountInt, err := strconv.Atoi(projectTimeEntry.TotalAmount)
+		if err != nil {
+			return nil, errors.New("Total Amount in Project Time Entry is not an integer")
+		}
+		totalAmountInt = totalAmountInt + derivedAmount
+	} else {
+		projectTimeEntry.ProjectName = projectname
+		totalAmountInt = derivedAmount
+	}
 
-	//append
-	projectTimeEntriesArray = append(projectTimeEntriesArray, timeEntry)									//add marble name to index list
-	fmt.Println("! Project Time Entries (After append) : ", projectTimeEntriesArray)
-	jsonAsBytes, _ := json.Marshal(projectTimeEntriesArray)
-	err = stub.PutState(projectname, jsonAsBytes)						//store name of marble
+	projectTimeEntry.TotalAmount = strconv.Itoa(totalAmountInt)
+	timeEntries := projectTimeEntry.TimeEntries
+	timeEntries = append(timeEntries, timeEntry)
+	projectTimeEntry.TimeEntries = timeEntries
+	fmt.Println("! Project Time Entry (After append) : ", projectTimeEntry)
+	jsonAsBytes, _ := json.Marshal(projectTimeEntry)
+	err = stub.PutState(projectname, jsonAsBytes)
 
 	fmt.Println("- end create time entry")
 	return nil, nil
