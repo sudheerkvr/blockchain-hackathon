@@ -53,18 +53,6 @@ type UserRate struct{
   Rate string `json:"rate"`
 }
 
-//list of user rates , as exaple P1 --> U1 100
-type ProjectUserRate struct{
-	ProjectUserRate []UserRate `json:"project_userrates"`
-}
-
-//list of projects,  as example GE::ABCConsulting --> P1,P2
-
-type Projects struct{
-	Projects []string
-}
-
-
 // ============================================================================================================================
 //  Main - main - Starts up the chaincode
 // ============================================================================================================================
@@ -86,37 +74,13 @@ if err != nil {
 	 return nil,err
 }
 
-  //Initilizing the sample projects
-  consultingProjects := []string {"Proj1","Proj2","Proj3"}
+_,err = t.initializeData(stub,args)
 
-  jsonAsBytes, _ := json.Marshal(consultingProjects)
-	err = stub.PutState(projectsIndexStr, jsonAsBytes)
-	if err != nil {
-		return nil, err
-	}
+if err != nil {
+	 return nil,err
+}
 
- //Initilizing the Project user rates p1 -->[ {u1 100}, {u2 200 }]
- var projectUserRates []UserRate
- userrate := UserRate{}
- userrate.User = "Chandra"
- userrate.Rate = "90"
- projectUserRates = append(projectUserRates,userrate)
-
- userrate.User = "Sudheer"
- userrate.Rate = "100"
- projectUserRates = append(projectUserRates,userrate)
-
- userrate.User = "Sanjay"
- userrate.Rate = "80"
- projectUserRates = append(projectUserRates,userrate)
-
- jsonAsBytes, _ = json.Marshal(projectUserRates)
- err = stub.PutState("Proj1", jsonAsBytes)
- if err != nil {
-   return nil, err
- }
-
-	return nil, nil
+return nil, nil
 }
 
 // Invoke is our entry point to invoke a chaincode function
@@ -166,4 +130,41 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
     }
 
     return valAsbytes, nil
+}
+
+
+//Initilizing project Data
+
+func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface,args []string) ([]byte, error){
+  //Initilizing the sample projects
+  consultingProjects := []string {"Proj1","Proj2","Proj3"}
+
+  jsonAsBytes, _ := json.Marshal(consultingProjects)
+	err := stub.PutState(projectsIndexStr, jsonAsBytes)
+	if err != nil {
+		return nil, err
+	}
+
+ //Initilizing the Project user rates p1 -->[ {u1 100}, {u2 200 }]
+ var projectUserRates []UserRate
+ userrate := UserRate{}
+ userrate.User = "Chandra"
+ userrate.Rate = "90"
+ projectUserRates = append(projectUserRates,userrate)
+
+ userrate.User = "Sudheer"
+ userrate.Rate = "100"
+ projectUserRates = append(projectUserRates,userrate)
+
+ userrate.User = "Sanjay"
+ userrate.Rate = "80"
+ projectUserRates = append(projectUserRates,userrate)
+
+ jsonAsBytes, _ = json.Marshal(projectUserRates)
+ err = stub.PutState("Proj1", jsonAsBytes)
+ if err != nil {
+   return nil, err
+ }
+
+return nil,nil
 }
