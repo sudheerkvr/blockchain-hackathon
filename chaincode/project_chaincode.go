@@ -174,7 +174,7 @@ func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args 
 // ============================================================================================================================
 func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-	//   0          1          2         3     4
+	//   0          1         2        3    4
 	// "Proj1", "Task11", "chandra", "40", "ST"
 	if len(args) != 5 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 5")
