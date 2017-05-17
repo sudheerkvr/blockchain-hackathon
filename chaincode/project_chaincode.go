@@ -173,7 +173,6 @@ func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args 
 // Create Time Entry - create a new time entry, store into chaincode state
 // ============================================================================================================================
 func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var err error
 
 	//   0          1          2         3     4
 	// "Proj1", "Task11", "chandra", "40", "ST"
@@ -262,7 +261,7 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	var totalAmountInt int
 	if len(projectTimeEntry.TimeEntries) > 0 {
 		fmt.Println("No. of time entries : ", len(projectTimeEntry.TimeEntries));
-		totalAmountInt, err := strconv.Atoi(projectTimeEntry.TotalAmount)
+		totalAmountInt, err = strconv.Atoi(projectTimeEntry.TotalAmount)
 		if err != nil {
 			return nil, errors.New("Total Amount in Project Time Entry is not an integer")
 		}
