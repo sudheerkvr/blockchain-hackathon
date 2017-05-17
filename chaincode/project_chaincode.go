@@ -274,6 +274,8 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 		totalAmountInt = derivedAmount
 	}
 
+	fmt.Println("totalAmountInt : ", totalAmountInt);
+	fmt.Println("strconv.Itoa(totalAmountInt) : ", strconv.Itoa(totalAmountInt));
 	projectTimeEntry.TotalAmount = strconv.Itoa(totalAmountInt)
 	fmt.Println("projectTimeEntry.TotalAmount : ", projectTimeEntry.TotalAmount);
 	timeEntries := projectTimeEntry.TimeEntries
