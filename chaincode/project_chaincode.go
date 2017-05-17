@@ -150,25 +150,16 @@ func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args 
 		return nil, err
 	}
 
+	//Rates for proj1
 	str := `{"chandra" : "90", "shiva" : "80", "sudheer" : "70"}`;
-	
-	//Initilizing the Project user rates proj1 -->[ {u1 100}, {u2 200 }]
-	/*var projectUserRates []UserRate
-	userrate := UserRate{}
-	userrate.User = "chandra"
-	userrate.Rate = "90"
-	projectUserRates = append(projectUserRates, userrate)
-
-	userrate.User = "shiva"
-	userrate.Rate = "80"
-	projectUserRates = append(projectUserRates, userrate)
-
-	userrate.User = "sudheer"
-	userrate.Rate = "70"
-	projectUserRates = append(projectUserRates, userrate)
-
-	jsonAsBytes, _ = json.Marshal(projectUserRates)*/
 	err = stub.PutState(proj1Rates, []byte(str))
+	if err != nil {
+		return nil, err
+	}
+
+	//Rates for proj2
+	str = `{"chandra" : "120", "shiva" : "110", "sudheer" : "100"}`;
+	err = stub.PutState(proj2Rates, []byte(str))
 	if err != nil {
 		return nil, err
 	}
@@ -227,6 +218,9 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	projectRatesAsBytes, err := stub.GetState(projRates)
 	if err != nil {
 		return nil, errors.New("Failed to get rates for "+ projRates)
+	}
+	if projectRatesAsBytes == nil {
+		return nil, errors.New("Rates are not defined for "+ projectname)
 	}
 	
 	var projRatesObj map[string]interface{}
