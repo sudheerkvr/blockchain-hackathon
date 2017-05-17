@@ -261,6 +261,8 @@ func (t *SimpleChaincode) create_time_entry(stub shim.ChaincodeStubInterface, ar
 	//build the marble json string manually
 	timeEntryAsBytes := []byte(`{"projectname": "` + projectname + `", "taskname": "` + taskname + `", "personname": "` + personname + `", "quantityinhours": ` + strconv.Itoa(quantity) + `", "expensetype": "` + expensetype + `", "totalamount": ` + strconv.Itoa(totalAmount) + `"}`)
 
+	fmt.Println("timeEntryAsBytes : ", timeEntryAsBytes);
+	fmt.Println("timeEntryAsBytes as a string : ", string(timeEntryAsBytes));
 	var timeEntry TimeEntry
 	json.Unmarshal(timeEntryAsBytes, &timeEntry);
 	fmt.Println("timeEntry : ", timeEntry);
