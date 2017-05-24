@@ -20,12 +20,12 @@ type SimpleChaincode struct {
 }
 
 //can be derived from DB in real application
-var organizationStr = "GE"
-var consultingOrgStr = "ABCConsulting"
+var organizationStr = "Blockbuster Studios"
+var consultingOrgStr = "Primetime Editing Services"
 var projectMilestonesStr = "::milestones::" + consultingOrgStr
 var projectUsersStr = "::users::" + consultingOrgStr
 var timeFormat = "02-Jan-2006"
-var initialAmount = "500000"
+var initialAmount = "200000"
 
 //Data elements
 
@@ -55,11 +55,11 @@ type UserRate struct {
 }
 
 type OrgResult struct {
-	CompletedWorkAmount   string          `json:"completedworkamount"`
-	PendingContractAmount string          `json:"pendingcontractamount"`
-	AmountPaid            string          `json:"amountpaid"`
-	BalanceTobePaid       string          `json:"balancetobepaid"`
-	ProjectResults        []ProjectResult `json:"projectresults"`
+	CompletedWorkAmount   string           `json:"completedworkamount"`
+	PendingContractAmount string           `json:"pendingcontractamount"`
+	AmountPaid            string           `json:"amountpaid"`
+	BalanceTobePaid       string           `json:"balancetobepaid"`
+	ProjectResults        []ProjectResult  `json:"projectresults"`
 	AmountPaidLog         []AmountTransfer `json:"amounttransactions"`
 }
 
@@ -72,8 +72,9 @@ type ProjectResult struct {
 }
 
 type AmountTransfer struct {
-	AmountPaid          string `json:"amountpaid"`
-	Date                string `json:"date"`
+	AmountPaid string `json:"amountpaid"`
+	Date       string `json:"date"`
+	ProjectName   string `json:"projectname"`
 }
 
 // ============================================================================================================================
@@ -170,7 +171,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	//Initilizing the sample projects (can be dynamically derived from DB in realtime)
-	consultingProjects := []string{"Proj1", "Proj2", "Proj3"}
+	consultingProjects := []string{"Wonders of Galactica Project", "Making of Big Labowski Project", "Mission to Pluto"}
 
 	jsonAsBytes, _ := json.Marshal(consultingProjects)
 	err := stub.PutState(organizationStr+"::"+consultingOrgStr, jsonAsBytes)
@@ -181,16 +182,14 @@ func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args 
 	//Initilizing the Project user rates (can be dynamically derived from DB in realtime) p1 -->[ {u1 100}, {u2 200 }]
 	var projectUserRates []UserRate
 	userrate := UserRate{}
-	userrate.User = "Chandra"
-	userrate.Rate = "110"
+	userrate.User = "Connor Horton"
+	userrate.Rate = "200"
 	projectUserRates = append(projectUserRates, userrate)
 
-	userrate.User = "Sudheer"
-	userrate.Rate = "100"
+	userrate.User = "Lisa James"
+	userrate.Rate = "200"
 	projectUserRates = append(projectUserRates, userrate)
 
-	userrate.User = "Sanjay"
-	userrate.Rate = "80"
 	projectUserRates = append(projectUserRates, userrate)
 
 	jsonAsBytes, _ = json.Marshal(projectUserRates)
@@ -203,16 +202,14 @@ func (t *SimpleChaincode) initializeData(stub shim.ChaincodeStubInterface, args 
 	//Initilizing the Project user rates p1 -->[ {u1 100}, {u2 200 }]
 	projectUserRates = []UserRate{}
 	userrate = UserRate{}
-	userrate.User = "Chandra"
-	userrate.Rate = "105"
+	userrate.User = "Connor Horton"
+	userrate.Rate = "200"
 	projectUserRates = append(projectUserRates, userrate)
 
-	userrate.User = "Sudheer"
-	userrate.Rate = "110"
+	userrate.User = "Lisa James"
+	userrate.Rate = "200"
 	projectUserRates = append(projectUserRates, userrate)
 
-	userrate.User = "Sanjay"
-	userrate.Rate = "75"
 	projectUserRates = append(projectUserRates, userrate)
 
 	jsonAsBytes, _ = json.Marshal(projectUserRates)
@@ -419,6 +416,8 @@ func (t *SimpleChaincode) GetOrgOverview(stub shim.ChaincodeStubInterface, args 
 	projectResults := []ProjectResult{}
 	projectResult := ProjectResult{}
 
+fmt.Println("- start GetOrgOverview")
+
 	//get projects
 	projectsAsBytes, err := stub.GetState(organizationStr + "::" + consultingOrgStr)
 	if err != nil {
@@ -456,7 +455,7 @@ func (t *SimpleChaincode) GetOrgOverview(stub shim.ChaincodeStubInterface, args 
 				Aval, _ := strconv.ParseInt(timeEntries[x].DerivedAmount, 10, 32)
 				completedworkamount += Aval
 
-				projectResult.Name = timeEntries[x].PersonName + " " + timeEntries[x].QuantityInHours + " Hours Worked "
+				projectResult.Name = timeEntries[x].PersonName + " reported " + timeEntries[x].QuantityInHours + " Hours "
 				projectResult.Date = timeEntries[x].EntryDate
 				projectResult.DerivedAmount = timeEntries[x].DerivedAmount
 				projectResult.ProjectName = projects[i]
@@ -514,16 +513,19 @@ func (t *SimpleChaincode) GetOrgOverview(stub shim.ChaincodeStubInterface, args 
 	balancetobepaid = completedworkamount - amountpaid
 	orgResult.BalanceTobePaid = strconv.FormatInt(balancetobepaid, 10)
 
-//append amount paid transactions
-transfersAsBytes, err := stub.GetState(args[1] + "::amount_paid_log")
-if err != nil {
-	return nil, errors.New("Failed to get the first account")
-}
+	//append amount paid transactions
 
-amountPaidLog := []AmountTransfer{}
-json.Unmarshal(transfersAsBytes, &amountPaidLog)
+	fmt.Println("- adding amount paid log")
 
-orgResult.AmountPaidLog = amountPaidLog
+	transfersAsBytes, err := stub.GetState(consultingOrgStr + "::amount_paid_log")
+	if err != nil {
+		return nil, errors.New("Failed to get the first account")
+	}
+
+	amountPaidLog := []AmountTransfer{}
+	json.Unmarshal(transfersAsBytes, &amountPaidLog)
+
+	orgResult.AmountPaidLog = amountPaidLog
 
 	return json.Marshal(orgResult)
 }
@@ -553,13 +555,13 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 
 func (t *SimpleChaincode) PayAmount(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-	//     0           1         2       3
-	// "GE", "ABCConsulting", "1000" , "Date"
+	//     0           1         2       3         4
+	// "GE", "ABCConsulting", "1000" , "Date","Project Name"
 
 	var err error
 	fmt.Println("running PayAmount()")
 
-	if len(args) < 4 {
+	if len(args) < 5 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
 
@@ -575,7 +577,9 @@ func (t *SimpleChaincode) PayAmount(stub shim.ChaincodeStubInterface, args []str
 	if len(args[3]) <= 0 {
 		return nil, errors.New("4th argument Date must be a non-empty string")
 	}
-
+	if len(args[4]) <= 0 {
+		return nil, errors.New("4th argument Project Name must be a non-empty string")
+	}
 
 	accountAsBytes, err := stub.GetState(args[1] + "::amount_paid")
 	if err != nil {
@@ -592,7 +596,7 @@ func (t *SimpleChaincode) PayAmount(stub shim.ChaincodeStubInterface, args []str
 		return nil, err
 	}
 
-//log each entry
+	//log each entry
 	transfersAsBytes, err := stub.GetState(args[1] + "::amount_paid_log")
 	if err != nil {
 		return nil, errors.New("Failed to get the first account")
@@ -601,12 +605,13 @@ func (t *SimpleChaincode) PayAmount(stub shim.ChaincodeStubInterface, args []str
 	amountPaidLog := []AmountTransfer{}
 	json.Unmarshal(transfersAsBytes, &amountPaidLog)
 
-amountpaid := AmountTransfer{}
-amountpaid.AmountPaid = args[2]
-amountpaid.Date = args[3]
-amountPaidLog = append(amountPaidLog, amountpaid)
+	amountpaid := AmountTransfer{}
+	amountpaid.AmountPaid = args[2]
+	amountpaid.Date = args[3]
+	amountpaid.ProjectName = args[4]
+	amountPaidLog = append(amountPaidLog, amountpaid)
 
-jsonAsBytes, _ := json.Marshal(amountPaidLog)
+	jsonAsBytes, _ := json.Marshal(amountPaidLog)
 
 	err = stub.PutState(args[1]+"::amount_paid_log", jsonAsBytes) //write the variable into the chaincode state
 	if err != nil {
