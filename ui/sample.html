@@ -1,0 +1,76 @@
+<html>
+	<head>
+	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">-->
+
+	<link rel="stylesheet" href="css/font-awesome-4.5.0/css/font-awesome.min.css"></link>
+	<link rel="stylesheet" href="css/sample.css"></link>
+	<!--<link type="text/css" rel="stylesheet" href="css/main.min.css"/>-->
+	<script src='js/util/jquery-1.11.1.min.js'></script>
+	<script src='js/util/jquery-ui-1.11.4/jquery-ui.min.js'></script>
+	<script src='js/util/jquery.ui.touch-punch.min.js'></script>
+	<script src='js/funk.js'></script>
+	<script src='js/blockchain.js'></script>
+	<script src='js/sample.js'></script>
+	<script type='text/javascript'>
+			$(document).ready(function(){
+				
+				//Blockchain panel toggle
+				$("#viewBCWrap").click(function(){
+					if($("#footerWrap").is(":visible")){
+						$("#footerWrap").slideUp();
+					}
+					else{
+						$("#footerWrap").slideDown();
+					}
+				});
+				
+			});
+	</script>
+	</head>
+<body>
+<div class="mydiv" style="padding: 0px 50px 50px 50px">
+<h2 class="myh2">Blockbuster Studios Account Activities</h2>
+<br>
+<table id="AccountDoughnuts" class="doughnutTable">
+	<tr>
+		<td style="padding: 0px 0px 0px 70px"><span class="doughnutLabel">Work Status</span></td>
+		<td style="padding: 0px 0px 0px 70px"><span class="doughnutLabel">Billing Status</span></td>
+	</tr>
+	<tr>
+		<td>
+			<table>
+				<tr>
+					<td><canvas id="contractAmountCanvas" width=250 height=250></canvas></td>
+					<td id="WorkData"></td>
+				</tr>
+			</table>
+		</td>
+		<td>
+			<table>
+				<tr>
+					<td><canvas id="paidAmountCanvas" width=250 height=250></canvas></td>
+					<td id="BalanceData"></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<h3>Transactions</h3>
+<div id="transactions"></div>
+
+</div>
+	<div id="footerPanel">
+		<div id="viewBCWrap">
+			<span class="fa fa-eye"></span>
+			<span>&nbsp;&nbsp;View Transaction Blocks&nbsp;&nbsp;</span>
+			<span class="fa fa-angle-up"></span>
+		</div>
+		<div id="footerWrap" hidden>
+			<div id="blockWrap">
+				<div id="details"><p>Loading...</p><hr></div>
+			</div>
+		</div>
+		<!--<div><p>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/></p></div>-->
+	</div>
+</body>
+</html>

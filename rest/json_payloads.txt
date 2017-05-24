@@ -1,0 +1,213 @@
+{
+  "enrollId": "test_user0",
+    "enrollSecret": "MS9qrN8hFjlE"
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "deploy",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "path": "https://github.com/sudheerkvr/blockchain-hackathon/chaincode"
+    },
+    "ctorMsg": {
+      "function": "init",
+      "args": [
+        "Hello World"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 1
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "resource_time_entry",
+      "args": [
+        "Wonders of Galactica Project", "Sound Mixing","Lisa James","40","ST", "04/30/2017"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "resource_time_entry",
+      "args": [
+        "Mission to Pluto", "Editing Titles","Connor Horton","10","ST", "04/10/2017"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "complete_project_milestone",
+      "args": [
+        "Making of Big Labowski Project", "Pre-Production Complete", "Lisa James", "24000", "05/15/2017"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "complete_project_milestone",
+      "args": [
+        "Mission to Pluto", "Adding Transitions", "Lisa James", "25000", "04/01/2017"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "complete_project_milestone",
+      "args": [
+        "Wonders of Galactica Project", "Adding Transitions", "Connor Horton", "25000", "04/10/2017"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "pay_amount",
+      "args": [
+        "Blockbuster Studios","Primetime Editing Services","10000", "05/01/2017", "Mission to Pluto"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "pay_amount",
+      "args": [
+        "Blockbuster Studios","Primetime Editing Services","25000", "04/15/2017", "Wonders of Galactica Project"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "pay_amount",
+      "args": [
+        "Blockbuster Studios","Primetime Editing Services","10000", "04/15/2017", "Making of Big Labowski Project"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "pay_amount",
+      "args": [
+        "Blockbuster Studios","Primetime Editing Services","15000", "04/01/2017", "Wonders of Galactica Project"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
+
+{
+  "jsonrpc": "2.0",
+  "method": "query",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "dda20452e357d3cedaa6dbf430653d16388215449935b018f2b102e66f51843c83e5650eb19d5297ba9cba13a8276aeead243dd85155efcb4c77ec24ab386f74"
+    },
+    "ctorMsg": {
+      "function": "get_pending_amount",
+      "args": [
+        "Primetime Editing Services"
+      ]
+    },
+    "secureContext": "test_user0"
+  },
+  "id": 2
+}
